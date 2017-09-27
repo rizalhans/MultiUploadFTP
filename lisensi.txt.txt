@@ -1,0 +1,18 @@
+NOTE :
+1. Aplikasi ini boleh di gunakan personal, tim dan corporate, tidak diperjual belikan.
+2. Untuk saran dan kritik silahkan kirim ke ask@rizalhans.com
+3. bila ingin donasi silahkan kirim ke paypal saya https://www.paypal.me/RizalHans
+
+=====================================================
+
+Requirement
+1. Webserver (xampp, wampserver, dll)
+2. Minimum PHP php 5.6
+3. Internet Network
+4. ZIP Class PHP
+
+=====================================================
+
+CREDIT
+1. plupload (uploader)
+2. bootsrap (css framework)
