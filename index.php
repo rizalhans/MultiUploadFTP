@@ -6,7 +6,9 @@ session_start();
 if(!is_dir("savefolder")) {
 	mkdir("savefolder",0777);
 }
-
+if(!is_dir("arsip")) {
+	mkdir("arsip",0777);
+}
 $error[] = "";
 $pesan_error = "";
 
@@ -19,7 +21,18 @@ if(isset($_GET['logout']) && $_GET['logout'] == 1) {
 	$_SESSION['logged'] = NULL;
 	header("Location: index.php");
 }
-
+if(isset($array_ftp) && $array_ftp != "") { 
+	foreach($array_ftp as $ftp => $value) {
+		if($ftp) {
+			if(!is_dir($value['dirname'])) {
+				mkdir($value['dirname'], 0777);
+			}
+			if(!is_dir("arsip/".$value['dirname'])) {
+				mkdir("arsip/".$value['dirname'], 0777);
+			}
+		}
+	}
+}
 if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 	if(isset($_POST['username']) && $_POST['username'] == username) {
 		$username = true;
@@ -61,7 +74,9 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 							if($handle = opendir($value['dirname'])) {
 								while(($file = readdir($handle)) !== false) {
 									if($file != "." and $file != "..") {
-										unlink($value['dirname']."/".$file);	
+										if(copy($value['dirname']."/".$file, "arsip/".$value['dirname']."/".date("YmdHis")."-".$file)) {
+											unlink($value['dirname']."/".$file);
+										}
 									}
 							    }
 							    closedir($handle);
@@ -206,10 +221,12 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="library/bootstrap/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="library/plupload/jquery.plupload.queue/css/jquery.plupload.queue.css?v=4">
+	<link rel="stylesheet" href="library/table/css/jquery.dataTables.min.css?v=5">
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="library/bootstrap/js/bootstrap.min.js"></script>
 	<script src="library/plupload/plupload.full.min.js?v=4"></script>
 	<script src="library/plupload/jquery.plupload.queue/jquery.plupload.queue.js?v=4"></script>
+	<script src="library/table/js/jquery.dataTables.min.js?v=5"></script>
 	<script src="library/plupload/i18n/id.js?v=4"></script>
 </head>
 <body>
@@ -220,7 +237,19 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 	    </div>
 	    <ul class="nav navbar-nav navbar-right">
 	    	<li class="dropdown">
-	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Kunjungi <span class="caret"></span></a>
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-folder-open"></span> Arsip <span class="caret"></span></a>
+	          <ul class="dropdown-menu" role="menu">
+	          <?php if(isset($array_ftp) && $array_ftp != "") {
+	          	foreach ($array_ftp as $ftp => $data) {
+	          		if($ftp) { ?>
+	            <li><a href="<?php echo "index.php?page=arsip&folder=".$data['dirname']; ?>"><?php echo $ftp; ?></a></li>
+	            <?php }
+	        		}
+	            } ?>
+	          </ul>
+	        </li>
+	    	<li class="dropdown">
+	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-new-window"></span> Kunjungi <span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
 	          <?php if(isset($array_ftp) && $array_ftp != "") {
 	          	foreach ($array_ftp as $ftp => $data) {
