@@ -85,7 +85,7 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 					}
 				}
 			}
-			$pesan_error = "Hapus file di server berhasil.";
+			$pesan_error = "Arsipkan file di server berhasil.";
 		}
 		if(isset($_POST['uploadtoftp']) && $_POST['uploadtoftp'] == 1) {
 			if(isset($array_ftp) && $array_ftp != "") { 
@@ -259,6 +259,7 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 	        		}
 	            } ?>
 	            <li class="divider"></li>
+	            <li><a href="https://github.com/rizalhans/MultiUploadFTP" target="_blank">GitHub</a></li>
 	            <li><a href="http://rizalhans.com" target="_blank">www.rizalhans.com</a></li>
 	          </ul>
 	        </li>
