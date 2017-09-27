@@ -1,4 +1,5 @@
 <?php
+// save as file config ini dengan nama config.php dan sesuaikan dengan ftp anda
 
 define("username","");
 define("password","");
