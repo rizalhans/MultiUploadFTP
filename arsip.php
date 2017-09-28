@@ -27,5 +27,7 @@ if(is_dir("arsip/".$_GET['folder'])) {
 ?>
 </table>
 <script type="text/javascript">
-	$(".datatable").DataTable();
+	$(".datatable").DataTable({
+		"order": [ 0, "desc" ]
+	});
 </script>

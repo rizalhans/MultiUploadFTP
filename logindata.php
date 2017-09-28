@@ -83,7 +83,9 @@
 				}
 			} ?>
 			<script type="text/javascript">
-				$(".datatable").DataTable();
+				$(".datatable").DataTable({
+			        "order": [ 0, "desc" ]
+			    });
 			</script>
 		</div>
 	</div>
