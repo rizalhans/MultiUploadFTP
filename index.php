@@ -1,5 +1,4 @@
 <?php
-
 define('VERSION', '1.0');
 require_once("config.php");
 session_start();
@@ -102,7 +101,7 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 											$src_file 		= $value['dirname']."/".$file;
 											$remote_file 	= $file;
 											// set up basic connection
-											$conn_id = ftp_connect($value['ftp_server'],21);
+											$conn_id = ftp_connect("$value[ftp_server]",21);
 
 											// login with username and password
 											$login_result = ftp_login($conn_id, $value['username'], $value['password']);
@@ -174,11 +173,13 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 									            while(($file = readdir($handle)) !== false)
 									            {
 													if(pathinfo(savefolder."/".$file,PATHINFO_FILENAME) == $folder) {
-    													$zip->open($value['dirname']."/".$folder.".zip", ZipArchive::CREATE);
-							        
-												        $download_file = file_get_contents(savefolder."/".$file);
-												        $zip->addFromString($file,$download_file);
-    													$zip->close();
+														if(!is_file($value['dirname']."/".$folder.".zip")) {
+	    													$zip->open($value['dirname']."/".$folder.".zip", ZipArchive::CREATE);
+								        
+													        $download_file = file_get_contents(savefolder."/".$file);
+													        $zip->addFromString($file,$download_file);
+	    													$zip->close();
+	    												}
 							        				}
 								            }
 								            closedir($handle);
@@ -195,8 +196,10 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 						        	
 						            while(($file = readdir($handle)) !== false)
 						            {
-										if($file != "." and $file != "..") {		
-											copy(savefolder."/".$file, $value['dirname']."/".$file);
+										if($file != "." and $file != "..") {
+											if(!is_file($value['dirname']."/".$file)) {
+												copy(savefolder."/".$file, $value['dirname']."/".$file);
+											}
 										}
 						            }
 						            closedir($handle);
@@ -207,6 +210,66 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 				}
 			}
 		}
+	}
+
+	if(isset($_GET['reupload']) && $_GET['reupload'] != "" && isset($_GET['page']) && $_GET['page'] == "arsip" && isset($_GET['folder']) && $_GET['folder'] != "") {
+		$nama_folder = $_GET['folder'];
+		$file 		 = $_GET['reupload'];
+			if(isset($array_ftp) && $array_ftp != "") { 
+				foreach($array_ftp as $ftp => $value) {
+					if(isset($value['dirname']) && $value['dirname'] == $nama_folder) {
+											$src_file 		= "arsip/".$value['dirname']."/".$file;
+											$remote_file 	= $file;
+											// set up basic connection
+											$conn_id = ftp_connect("$value[ftp_server]",21);
+
+											// login with username and password
+											$login_result = ftp_login($conn_id, $value['username'], $value['password']);
+
+											// upload a file
+											if($value['link_cek']) {
+												$link = "<a href='$value[link_cek]/$file' target='blank'>Cek File</a>";
+											} else {
+												$link = "";
+											}
+
+											if (ftp_put($conn_id, "$value[lokasi_upload].$remote_file", "$src_file", FTP_BINARY)) {
+											  $pesan_error = "Upload file : $file sukses. $link";
+											} else {
+											  $pesan_error = "Upload file : $file GAGAL folder $src_file tidak ditemukan<br>";
+											}
+
+											// close the connection
+											ftp_close($conn_id);	
+					}
+				}
+			}
+		$_SESSION['notifikasi'] = $pesan_error;
+		header("Location: index.php?page=".$_GET['page']."&folder=".$_GET['folder']."&notifikasi=1");
+	}
+
+	if(isset($_GET['delete']) && $_GET['delete'] != "" && isset($_GET['page']) && $_GET['page'] == "arsip" && isset($_GET['folder']) && $_GET['folder'] != "") {
+		$nama_folder = $_GET['folder'];
+		$file 		 = $_GET['delete'];
+			if(isset($array_ftp) && $array_ftp != "") { 
+				foreach($array_ftp as $ftp => $value) {
+					if(isset($value['dirname']) && $value['dirname'] == $nama_folder) {
+											$src_file 		= "arsip/".$value['dirname']."/".$file;
+											// set up basic connection
+											if(unlink($src_file)) {
+												$pesan_error = "Delete file : $file sukses";
+											} else {
+												$pesan_error = "Delete file : $file gagal";
+											}
+					}
+				}
+			}
+		$_SESSION['notifikasi'] = $pesan_error;
+		header("Location: index.php?page=".$_GET['page']."&folder=".$_GET['folder']."&notifikasi=1");
+	}
+
+	if(isset($_SESSION['notifikasi']) && $_SESSION['notifikasi']  != "" && isset($_GET['notifikasi']) && $_GET['notifikasi'] == 1) {
+		$pesan_error = $_SESSION['notifikasi'];
 	}
 ?>
 <!DOCTYPE html>

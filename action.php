@@ -6,7 +6,7 @@ session_start();
 			// upload file standart
 			if(isset($_FILES["file"])) {
 				// upload ke master
-				$destinasi = savefolder."/".$_FILES['file']['name'];
+				$destinasi = savefolder."/".str_replace(" ","_",$_FILES['file']['name']);
 				move_uploaded_file($_FILES["file"]["tmp_name"], $destinasi);
 			}
 		}

@@ -16,7 +16,7 @@
 				</div>
 				<div class="form-group">
 				    <div class="col-sm-offset-4 col-sm-8">
-				      <button type="submit" name="logindata" value="1" class="btn btn-default">Sign in</button>
+				      <button type="submit" name="logindata" value="1" class="btn btn-primary">Sign in</button>
 				    </div>
 				</div>
 			</form>

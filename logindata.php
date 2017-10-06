@@ -65,7 +65,7 @@
 						while(($file = readdir($handle)) !== false) {
 							if($file != "." and $file != "..") { ?>
 						<tr>
-							<td><?php echo $file; ?></td>
+							<td><a data-tgl="<?php echo date ("Y-m-d H:i:s", filemtime($value['dirname']."/".$file)); ?>" data-type="<?php echo pathinfo($value['dirname']."/".$file,PATHINFO_EXTENSION); ?>" data-src="<?php echo $value['dirname']."/".$file; ?>" data-toggle="modal" href="#modal_detail"><?php echo $file; ?></a></td>
 							<td><?php echo pathinfo($value['dirname']."/".$file,PATHINFO_EXTENSION); ?></td>
 							<td><?php echo date ("Y-m-d H:i:s", filemtime($value['dirname']."/".$file)); ?></td>
 							<td><a class="btn btn-primary btn-block" target="_blank" href="<?php echo$value['dirname']."/".$file; ?>"><span class="glyphicon glyphicon-save"></span> Unduh</a></td>
@@ -90,6 +90,42 @@
 		</div>
 	</div>
 </div>
+<div id="modal_detail" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Detail File</h4>
+      </div>
+      <div class="modal-body">
+        <div id="detail_area"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script type="text/javascript">
+	$(document).ready(function(e) {
+		$('#modal_detail').on('show.bs.modal', function (e) {
+		  var button = $(e.relatedTarget) // Button that triggered the modal
+		  var srcdata = button.data('src') // Extract info from data-* attributes
+		  var typedata = button.data('type'); 
+		  var namadata = button.text();
+		  var tgldata = button.data('tgl');
+		  var modal = $(this);
+		  var detaildata = '<h2>'+namadata+'</h2>';
+		  if(typedata == 'jpg' || typedata == 'JPG' || typedata == 'jpeg' || typedata == "JPEG") {
+		  	detaildata += '<img src="'+srcdata+'" class="img-responsive"><br>';
+		  }
+		  detaildata += 'Type Data : '+typedata+'<br>';
+		  detaildata += 'Tgl Upload : '+tgldata+'<br>';
+
+		  modal.find('#detail_area').html(detaildata);
+		})
+
+	})
+</script>
 <?php } else { ?>
 <?php if(isset($_GET['page']) && $_GET['page'] != "" && isset($_GET['folder']) && $_GET['folder'] != "") { 
 	if(is_dir($_GET['folder']) && is_file($_GET['page'].".php")) {
