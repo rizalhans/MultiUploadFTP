@@ -173,13 +173,11 @@ if(isset($_POST['logindata']) && $_POST['logindata'] == 1) {
 									            while(($file = readdir($handle)) !== false)
 									            {
 													if(pathinfo(savefolder."/".$file,PATHINFO_FILENAME) == $folder) {
-														if(!is_file($value['dirname']."/".$folder.".zip")) {
 	    													$zip->open($value['dirname']."/".$folder.".zip", ZipArchive::CREATE);
 								        
 													        $download_file = file_get_contents(savefolder."/".$file);
 													        $zip->addFromString($file,$download_file);
 	    													$zip->close();
-	    												}
 							        				}
 								            }
 								            closedir($handle);
