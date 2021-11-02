@@ -1,5 +1,4 @@
 <?php
-echo "test";
 define("username","");
 define("password","");
 define("savefolder", "savefolder");
